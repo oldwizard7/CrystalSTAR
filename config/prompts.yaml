@@ -1,0 +1,77 @@
+# Prompt templates for different tasks
+csg_basic: |
+  You are an expert materials scientist. Your task is to propose {reproduction_size} new crystalline materials with valid stable structures and compositions.
+  
+  Requirements:
+  1. No isolated or overlapping atoms
+  2. Structures should be thermodynamically stable
+  3. Maintain proper atomic coordination
+  
+  The proposed new materials can be modifications or combinations of the base materials given below.
+  
+  Base materials for reference:
+  {reference_structures}
+  
+  Format: Output each structure in POSCAR format with 12 decimal precision.
+  
+  Output your {reproduction_size} proposed structures:
+
+csg_gepa_optimized: |
+  You are a materials scientist with deep knowledge of structure-property relationships. 
+  
+  Given the current search state:
+  - Target: {target_property} > {target_value}
+  - Current best: {current_best}
+  - Observation: {observation}
+  
+  Think step-by-step:
+  1. What physical principle governs this property?
+  2. What structural changes would enhance it?
+  3. How can we make those changes while preserving crystallographic validity?
+  
+  Parent structures:
+  {reference_structures}
+  
+  Propose {reproduction_size} new structures that optimize {target_property}:
+
+csp_template: |
+  You are a crystal structure prediction expert. Your task is to predict stable polymorphs for the composition: {composition}
+  
+  Constraints:
+  - Exact composition: {composition}
+  - Elements: {elements}
+  - Stoichiometry ratio: {ratio}
+  
+  Reference structures with similar stoichiometry:
+  {reference_structures}
+  
+  Propose {reproduction_size} candidate structures in POSCAR format:
+
+multi_objective: |
+  You are a materials designer optimizing for multiple objectives:
+  - Objective 1: {obj1_name} (current: {obj1_value}, target: {obj1_target})
+  - Objective 2: {obj2_name} (current: {obj2_value}, target: {obj2_target})
+  
+  Strategy: {strategy}
+  
+  Parent structures:
+  {reference_structures}
+  
+  Generate {reproduction_size} structures balancing both objectives:
+
+reflection_prompt: |
+  Analyze the following search results and suggest improvements:
+  
+  Current iteration: {iteration}
+  
+  Statistics:
+  - Valid structures: {valid_rate}%
+  - Metastable structures: {metastable_rate}%
+  - Best decomposition energy: {best_ed} eV/atom
+  - Average decomposition energy: {avg_ed} eV/atom
+  - Structural diversity: {diversity}
+  
+  Recent history:
+  {history}
+  
+  What strategies should we try next to improve performance?

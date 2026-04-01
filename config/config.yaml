@@ -1,0 +1,245 @@
+# CrystalSTAR Configuration
+
+# ============================================================================
+# Task Configuration
+task:
+  active: "high_k_dielectrics"
+  config_file: "config/tasks.yaml"
+
+# ============================================================================
+# Profile Switching
+# Use: --profile login|gpu or env CRYSTALSTAR_PROFILE=login|gpu
+profile:
+  active: "gpu"
+  env_var: "CRYSTALSTAR_PROFILE"
+
+profiles:
+  login:
+    evolution:
+      population_size: 0
+      parent_size: 1
+      children_size: 3
+      max_iterations: 5
+    evaluator:
+      relax:
+        fmax: 0.8
+        steps: 30
+        cell_filter: "none"
+      mp_max_entries: 30
+    llm:
+      model: "gpt-4o-mini"
+      temperature: 0.7
+      max_tokens: 4096
+  gpu:
+    evolution:
+      population_size: 0
+      parent_size: 1
+      children_size: 5
+      max_iterations: 50
+    evaluator:
+      device: cuda
+      relax:
+        fmax: 0.05
+        steps: 500
+        cell_filter: "UnitCellFilter"
+      mp_max_entries: 500
+      property_backend_external:
+        alignn_external:
+          command: "conda run -n alignn python scripts/alignn_predict.py"
+    llm:
+      model: "gpt-4o-mini"
+      temperature: 0.8
+      max_tokens: 8192
+
+thresholds:
+  metastability: 0.1
+  failure_multiplier: 5  # Structures with Ed > metastability * this are "failures"
+
+# Reflection configuration
+reflection:
+  selection_mode: "weighted_score"  # Options: "weighted_score", "legacy"
+  analyze_count: 5  # Top-3 + Bottom-2 (in weighted_score mode)
+
+  # Multi-scale Memory Module (M3)
+  hierarchical:
+    enabled: true
+    prompt_layout: "m3_explicit"
+    llm_reflection:
+      enabled: true
+      meso_enabled: true
+      macro_enabled: true
+      require_llm_client: false
+      strict_mode: true
+      retry_max_attempts: 3
+      retry_backoff_seconds: 1.0
+      meso_trigger_policy: "every_iteration"
+      trace_io: true
+      trace_dirname: "reflection"
+      meso_prompt_micro_k: 6
+      meso_prompt_history_k: 4
+      macro_prompt_meso_k: 6
+      macro_prompt_micro_k: 4
+      macro_prompt_history_k: 4
+    micro:
+      enabled: true
+      max_items_for_prompt: 3
+      max_items_stored: 100
+    meso:
+      enabled: true
+      max_items_for_prompt: 3
+      max_items_stored: 30
+      stagnation_patience: 3
+      stagnation_epsilon: 1.0e-6
+    macro:
+      enabled: true
+      max_items_for_prompt: 2
+      max_items_stored: 20
+      trigger_every_n_iters: 10
+      persist_across_runs: true
+      store_dir: "data/memory/macro_rules"
+      min_confidence: 0.55
+
+# Evolution parameters
+evolution:
+  population_size: 5      # K: number of groups
+  parent_size: 4          # P: parents per group
+  children_size: 5        # C: children per iteration
+  max_iterations: 50      # N: total iterations
+
+objective:
+  type: "stability"
+  targets:
+    decomposition_energy: 0.0
+  weights:
+    stability: 1.0
+
+# LLM configuration
+llm:
+  provider: "openai"        # Options: openai, anthropic
+  model: "gpt-4o-mini"
+  temperature: 0.8
+  max_tokens: 8192
+  print_prompts: true
+  api_key_env: "OPENAI_API_KEY"
+
+# Tool selector configuration
+tool_selector:
+  disabled_tools:
+
+# ============================================================================
+# Generation Mode
+# Options: "tool_calling" (default) | "direct_llm" (ablation baseline)
+# ============================================================================
+generation_mode: "tool_calling"
+
+# ============================================================================
+# Ablation Mode (tool_calling chain only)
+# crystal_forge: full M3 framework (default)
+# vanilla_react: no memory accumulation across iterations
+# flat_memory: raw context without hierarchical structuring
+# ============================================================================
+ablation_mode: "crystal_forge"
+
+# MLIP evaluator
+evaluator:
+  backend: "chgnet"         # Options: chgnet, m3gnet, orb
+  device: cuda
+  property_backends:
+    bulk_modulus: alignn_external
+    shear_modulus: alignn_external
+    piezoelectric_coefficient: alignn_external
+    dielectric_constant: alignn_external
+    band_gap: alignn_external
+    formation_energy: alignn_external
+  property_backend_external:
+    alignn_external:
+      command: "conda run -n alignn python scripts/alignn_predict.py"
+      timeout: 300
+      device: cpu
+      model_dir: null
+  property_calibration:
+    piezoelectric_coefficient:
+      type: linear
+      a: 1.0
+      b: 0.0
+  relax:
+    fmax: 0.05
+    steps: 500
+    optimizer: "FIRE"
+    cell_filter: "UnitCellFilter"
+  energy_cutoff: 0.1        # Metastability threshold (eV/atom)
+
+  mp_recompute_mlip: true
+  mp_max_entries: 100
+  mp_offline: false
+
+  elemental_skip_filter:
+    enabled: true
+    symbols: ["O", "F"]
+
+# Structure validation
+validation:
+  min_distance_factor: 0.75
+  max_distance_factor: 1.3
+  check_charge_balance: true
+  symmetry_tolerance: 0.1
+
+novelty:
+  use_structure_matching: true
+  mode: "standard"
+  density_tolerance: 0.10
+  natoms_tolerance: 2
+  matcher:
+    ltol: 0.2
+    stol: 0.3
+    angle_tol: 5
+
+# Data paths
+data:
+  database: "data/matbench/"
+  initial_structures: "data/initial_structures/"
+  output_dir: "output/"
+  cache_dir: "data/cache/"
+
+  initial_parent_pool:
+    enabled: false
+    path: "data/reference_examples/novel_stable"
+    max_count: 12
+    seed: 42
+    strategy: "diversity"
+
+    template_library:
+      enabled: true
+      max_templates: 10
+      max_elements: 3
+      prefer_prior_prompt: true
+      prefer_prior_templates: true
+
+    diversity:
+      criteria:
+        - crystal_system
+        - nelements
+
+    llm_retrieval:
+      enabled: true
+      cache_dir: "data/mp_cache"
+      mp_api:
+        max_results: 200
+        sort_by: "energy_above_hull"
+      llm_analyzer:
+        enabled: true
+        provider: "openai"
+        model: "gpt-4o-mini"
+        temperature: 0.3
+      diversity_sampling:
+        method: "stratified"
+        criteria:
+          - crystal_system
+          - num_elements
+          - composition
+
+# Logging
+logging:
+  level: "INFO"
+  save_structures: true
+  save_frequency: 1

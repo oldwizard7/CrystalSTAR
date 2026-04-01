@@ -1,0 +1,524 @@
+# ============================================================================
+# Task Definitions for MatAgent
+# ============================================================================
+# Each task defines:
+#   - name: Human-readable task name
+#   - description: Task background and goals
+#   - constraints: Hard constraints that ALL must be satisfied (for Hit Rate)
+#   - objective: Soft optimization targets (for guiding search)
+#
+# Usage:
+#   python src/main.py --task <task_name>
+#   OR set "active" in config.yaml
+# ============================================================================
+
+tasks:
+  # 1. Wide-Bandgap Semiconductors
+  wide_bandgap_semiconductors:
+    name: "Stable Wide-Bandgap Semiconductors"
+    description: |
+      Wide-bandgap semiconductors for high-power electronics and UV optoelectronics.
+    constraints:
+      is_valid: {value: true}
+      band_gap: {min: 2.5, enabled: true}
+      formation_energy: {max: -1.0, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {band_gap: 3.5, formation_energy: -2.0, decomposition_energy: 0.0}
+      weights: {band_gap: 0.35, formation: 0.35, stability: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 100
+      force_refresh: false
+      path: "prior_database/wide_bandgap_semiconductors"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 10
+        max_sites: 1000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 2. SAW/BAW Acoustic Substrates
+  saw_baw_acoustic:
+    name: "SAW/BAW Acoustic Substrates"
+    description: |
+      Acoustic substrates for wireless communication RF filters and resonators.
+    constraints:
+      is_valid: {value: true}
+      shear_modulus: {min: 25, max: 150, enabled: true}
+      dielectric_constant: {min: 3.7, max: 95, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {shear_modulus: 87.5, dielectric_constant: 49.35, decomposition_energy: 0.0}
+      weights: {shear: 0.35, dielectric: 0.35, stability: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/saw_baw_acoustic"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 10
+        max_sites: 1000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 3. High-k Dielectrics
+  high_k_dielectrics:
+    name: "High-k Dielectrics"
+    description: |
+      High-permittivity dielectrics for capacitors and semiconductor gate oxides.
+    constraints:
+      is_valid: {value: true}
+      dielectric_constant: {min: 10, max: 90, enabled: true}
+      band_gap: {min: 2.5, max: 6.5, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {dielectric_constant: 50, band_gap: 4.5, decomposition_energy: 0.0}
+      weights: {dielectric: 0.35, insulation: 0.35, stability: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/high_k_dielectrics"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 10
+        max_sites: 1000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 4. Solid-State Electrolytes
+  solid_state_electrolytes:
+    name: "Solid-State Electrolytes"
+    description: |
+      Solid electrolytes for safe, high-energy batteries.
+    constraints:
+      is_valid: {value: true}
+      band_gap: {min: 2.0, enabled: true}
+      formation_energy: {max: -1.0, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+      contains_mobile_species: {value: true, elements: ["Li", "Na", "K", "Mg", "Ca", "Al"], enabled: true}
+    objective:
+      targets: {band_gap: 3.0, formation_energy: -2.0, decomposition_energy: 0.0}
+      weights: {insulation: 0.35, stability_formation: 0.35, stability_hull: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/solid_state_electrolytes"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: ["Li", "Na", "K", "Mg", "Ca", "Al"]
+        include_mode: "any"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 10
+        max_sites: 1000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 5. Piezoelectric Energy Harvesters
+  piezo_energy_harvesters:
+    name: "Piezoelectric Energy Harvesters"
+    description: |
+      Materials with strong electromechanical coupling for energy harvesting.
+    constraints:
+      is_valid: {value: true}
+      piezoelectric_coefficient: {min: 8, enabled: true}  # dij ≥ 8 pC/N
+      dielectric_constant: {min: 10, max: 8000, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {piezoelectric_coefficient: 50, dielectric_constant: 1000, decomposition_energy: 0.0}
+      weights: {piezoelectric: 0.35, dielectric: 0.35, stability: 0.3}
+      # FOM: d^2/κ (maximize piezo activity, minimize dielectric loading)
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/piezo_energy_harvesters"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 2
+        max_elements: 4
+        max_sites: 100
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 6. Photovoltaic Absorbers
+  photovoltaic_absorbers:
+    name: "Photovoltaic Absorbers"
+    description: |
+      Solar absorber materials with optimal bandgap and earth-abundant composition.
+    constraints:
+      is_valid: {value: true}
+      band_gap: {min: 0.7, max: 2.0, enabled: true}           # 0.7-2.0 eV (hard)
+      formation_energy: {max: 0.0, enabled: true}              # <= 0.0 eV/atom (hard)
+      decomposition_energy: {max: 0.1, enabled: false}         # soft - prefer stable
+    objective:
+      targets: {band_gap: 1.34, formation_energy: -1.5, decomposition_energy: 0.0}
+      weights: {optical: 0.4, stability_formation: 0.3, stability_hull: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/photovoltaic_absorbers"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 10
+        max_sites: 1000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 7. Hard Coating Materials
+  hard_coatings:
+    name: "Hard Coating Materials"
+    description: |
+      Ultra-hard coatings for wear resistance and high-temperature protection.
+    constraints:
+      is_valid: {value: true}
+      bulk_modulus: {min: 200, max: 500, enabled: true}  # GPa
+      shear_modulus: {min: 100, max: 300, enabled: true}  # GPa
+      band_gap: {min: 3.0, enabled: false}
+      formation_energy: {max: -1.0, enabled: false}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {bulk_modulus: 400, shear_modulus: 200, decomposition_energy: 0.0}
+      weights: {bulk: 0.35, shear: 0.35, stability_hull: 0.3}
+
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/hard_coatings"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        max_elements: 4
+        max_sites: 100
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 8. Hard, Stiff Ceramics
+  hard_stiff_ceramics:
+    name: "Hard, Stiff Ceramics"
+    description: |
+      Ceramics with high resistance to deformation and stiffness.
+    constraints:
+      is_valid: {value: true}
+      bulk_modulus: {min: 100, max: 300, enabled: true}  # GPa
+      shear_modulus: {min: 60, max: 200, enabled: true}  # GPa
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {bulk_modulus: 200, shear_modulus: 130, decomposition_energy: 0.0}
+      weights: {bulk: 0.35, shear: 0.35, stability: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+
+      # override:
+      #   max_elements: 4
+
+      path: "prior_database/hard_stiff_ceramics"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: ["B", "C", "N", "O", "Si", "Al", "Ti", "Zr", "Hf"]
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        max_elements: 4
+        max_sites: 100
+
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+        force_prior_templates: true
+        use_default_templates: false
+        
+
+  # 9. Aerospace Materials
+  aerospace_materials:
+    name: "Structural Materials for Aerospace"
+    description: |
+      Lightweight, high-strength materials for aviation and spaceflight.
+    constraints:
+      is_valid: {value: true}
+      bulk_modulus: {min: 100, enabled: true}  # GPa
+      shear_modulus: {min: 40, enabled: true}  # GPa
+      density: {max: 5.0, enabled: true}  # g/cm³
+      decomposition_energy: {max: 5.0, enabled: true}  # Relaxed stability for aerospace alloys
+    objective:
+      targets: {bulk_modulus: 200, shear_modulus: 80, density: 3.0, decomposition_energy: 0.0}
+      weights: {stiffness_bulk: 0.3, stiffness_shear: 0.3, lightness: 0.2, stability: 0.2}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/aerospace_materials"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: ["Al", "Ti", "Mg", "Li", "Si", "B", "C", "N", "V", "Zr", "Nb"]
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        max_elements: 4
+        max_sites: 100
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 10. Acousto-Optic Hybrids
+  acousto_optic_hybrids:
+    name: "Acousto-Optic Hybrid Materials"
+    description: |
+      Materials balancing piezoelectric and dielectric properties for acousto-optic devices.
+    constraints:
+      is_valid: {value: true}
+      piezoelectric_coefficient: {min: 2, max: 9, enabled: true}  # dij, pC/N
+      dielectric_constant: {min: 8, max: 95, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {piezoelectric_coefficient: 5.5, dielectric_constant: 50, decomposition_energy: 0.0}
+      weights: {piezoelectric: 0.35, dielectric: 0.35, stability: 0.3}
+      # Prefer narrow κ band to reduce dielectric loading
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/acousto_optic_hybrids"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 4
+        max_sites: 100
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+        force_prior_templates: true
+        use_default_templates: false
+
+  # 11. Low-Density Structural (Aerospace)
+  low_density_aerospace:
+    name: "Low-Density Structural (Aerospace)"
+    description: |
+      Lightweight structural materials targeting low density and high shear stiffness.
+      Note: Creep resistance is not modeled; we only hard-filter thermodynamic stability.
+    constraints:
+      is_valid: {value: true}
+      density: {max: 3.5, enabled: true}  # g/cm³
+      shear_modulus: {min: 65, max: 195, enabled: true}  # GPa
+      decomposition_energy: {max: 0.1, enabled: false}  # discard unstable phases
+    objective:
+      # Proxy for maximizing G/ρ: push higher G and lower density.
+      targets: {shear_modulus: 195, density: 2.5, decomposition_energy: 0.0}
+      weights: {stiffness_shear: 0.35, lightness: 0.35, stability: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/low_density_aerospace"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        #include_elements: ["Al", "Mg", "Li", "Ti", "Be", "Si", "B", "C", "N", "O", "Zn", "Cu", "V", "Zr"]
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        max_elements: 5
+        
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+        force_prior_templates: true
+        use_default_templates: false
+
+  # 12. Toxic-Free Perovskite Oxides
+  toxic_free_perovskite_oxide:
+    name: "Toxic-Free Perovskite Oxides"
+    description: |
+      Non-toxic ABO3 perovskite oxide materials with moderate band gap and
+      bulk modulus. Excludes hazardous elements (Pb, Cd, Hg, Tl, Be, As,
+      Sb, Se, U, Th) for environmentally safe applications.
+    constraints:
+      is_valid: {value: true}
+      band_gap: {min: 2.0, enabled: true}                  # >= 2.0 eV (hard)
+      bulk_modulus: {min: 90, max: 135, enabled: true}      # 90-135 GPa (hard)
+      decomposition_energy: {max: 0.1, enabled: false}      # soft - prefer stable
+    objective:
+      targets: {band_gap: 3.0, bulk_modulus: 112.5, decomposition_energy: 0.0}
+      weights: {band_gap: 0.35, bulk_modulus: 0.35, stability: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/toxic_free_perovskite_oxide"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: ["Pb", "Cd", "Hg", "Tl", "Be", "As", "Sb", "Se", "U", "Th"]
+        max_elements: 10
+        max_sites: 1000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 13. Insulating Dielectrics
+  insulating_dielectrics:
+    name: "Insulating Dielectrics"
+    description: |
+      High-permittivity insulating dielectrics with wide band gap.
+    constraints:
+      is_valid: {value: true}
+      dielectric_constant: {min: 8.0, enabled: true}
+      band_gap: {min: 2.5, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {dielectric_constant: 50, band_gap: 4.5, decomposition_energy: 0.0}
+      weights: {dielectric: 0.35, insulation: 0.35, stability: 0.3}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/insulating_dielectrics"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 10
+        max_sites: 2000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+  # 14. Transparent Conductors
+  transparent_conductors:
+    name: "Transparent Conductors"
+    description: |
+      Transparent conducting materials combining optical transparency with electrical conductivity.
+      Target: band_gap > 3.0 eV for UV/visible transparency, conductivity 50-5000 S/cm.
+      Note: conductivity cannot be evaluated by surrogate models.
+      If ranking, use FoM σ·T² balancing transparency vs conductivity.
+    constraints:
+      is_valid: {value: true}
+      band_gap: {min: 3.0, enabled: true}
+      decomposition_energy: {max: 0.1, enabled: false}
+    objective:
+      targets: {band_gap: 4.0, decomposition_energy: 0.0}
+      weights: {insulation: 0.5, stability: 0.5}
+    initial_parent_pool:
+      enabled: true
+      use_llm_retrieval: false
+      max_count: 80
+      force_refresh: false
+      path: "prior_database/transparent_conductors"
+      strategy: "task_oriented"
+      task_oriented:
+        enabled: true
+        include_elements: []
+        include_mode: "subset"
+        fill_general_pool: true
+        exclude_elements: []
+        min_elements: 3
+        max_elements: 10
+        max_sites: 1000
+      template_library:
+        enabled: true
+        max_templates: 10
+        max_elements: 3
+
+# ============================================================================
+# Future Tasks (Templates for Extension)
+# ============================================================================
+# Uncomment and modify as needed for new discovery campaigns
+
+# ============================================================================
+# Notes for Future CSV Support
+# ============================================================================
+# When scaling to many tasks, consider:
+#   1. CSV format: task_name, constraint_type, constraint_value, ...
+#   2. Loader: TaskLoader.from_csv(csv_path)
+#   3. Keep this YAML for primary/curated tasks
+#   4. CSV for batch experiments and parameter sweeps

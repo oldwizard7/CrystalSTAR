@@ -1,0 +1,37 @@
+name: matllm_agent
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+
+  # core scientific stack
+  - numpy>=1.24
+  - pandas>=2.0
+  - scipy
+  - pip
+
+  # materials science stack
+  - pymatgen>=2023.10.0
+  - ase>=3.22.0
+  - spglib>=2.0.2
+  - seekpath
+
+  # plotting
+  - matplotlib>=3.7.0
+
+  # utils
+  - pyyaml>=6.0
+  - joblib
+  - tqdm
+
+  # LLM / agent stack
+  - pydantic>=2.0
+
+  # pip-installed packages
+  - pip:
+      - chgnet>=0.3.0
+      - openai>=1.0.0
+      - tiktoken>=0.5.0
+      - tenacity>=8.2.0
+      - mp-api>=0.37.0
+

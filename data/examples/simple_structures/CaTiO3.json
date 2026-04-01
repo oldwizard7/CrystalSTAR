@@ -1,0 +1,60 @@
+{
+  "formula": "CaTiO3",
+  "lattice": [
+    [
+      3.84,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      3.84,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      3.84
+    ]
+  ],
+  "positions": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      0.5,
+      0.5
+    ],
+    [
+      0.5,
+      0.5,
+      0.0
+    ],
+    [
+      0.5,
+      0.0,
+      0.5
+    ],
+    [
+      0.0,
+      0.5,
+      0.5
+    ]
+  ],
+  "species": [
+    "Ca",
+    "Ti",
+    "O",
+    "O",
+    "O"
+  ],
+  "energy": null,
+  "decomposition_energy": null,
+  "properties": {},
+  "is_valid": false,
+  "is_relaxed": false,
+  "metadata": {}
+}
