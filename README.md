@@ -53,22 +53,22 @@ python -m src.main --list-tasks
 
 All 14 tasks are defined in `config/tasks.yaml`:
 
-| Task | Target Properties |
-|------|-------------------|
-| Wide-Bandgap Semiconductors | Band gap >= 2.5 eV, Formation energy <= -1.0 eV/atom |
-| SAW/BAW Acoustic Substrates | Bulk modulus 100-250 GPa, Shear 50-150 GPa |
-| High-k Dielectrics | Dielectric constant 10-90, Band gap 2.5-6.5 eV |
-| Solid-State Electrolytes | Band gap 4.0-8.0 eV |
-| Piezoelectric Harvesters | Piezo coeff. 2-20 C/m2, Band gap >= 2.0 eV |
-| Photovoltaic Absorbers | Band gap 1.0-1.8 eV |
-| Hard Coatings | Bulk 200-500 GPa, Shear 100-300 GPa |
-| Hard, Stiff Ceramics | Bulk 200-400 GPa, Shear 120-250 GPa |
-| Aerospace Materials | Bulk 80-160 GPa, Shear 40-100 GPa |
-| Acousto-Optic Hybrids | Bulk 50-150 GPa, Band gap 2.0-5.0 eV |
-| Low-Density Structural | Bulk 30-120 GPa, Density 1.5-4.0 g/cm3 |
-| Toxic-Free Perovskite Oxides | Band gap >= 2.0, Bulk 90-135 GPa |
-| Insulating Dielectrics | Dielectric 5-50, Band gap >= 5.0 eV |
-| Transparent Conductors | Band gap 2.5-4.5 eV |
+| Task | Hard Constraints |
+|------|------------------|
+| Wide-Bandgap Semiconductors | Band gap >= 2.5 eV; formation energy <= -1.0 eV/atom |
+| SAW/BAW Acoustic Substrates | Shear modulus 25-150 GPa; dielectric constant 3.7-95 |
+| High-k Dielectrics | Dielectric constant 10-90; band gap 2.5-6.5 eV |
+| Solid-State Electrolytes | Band gap >= 2.0 eV; formation energy <= -1.0 eV/atom |
+| Piezoelectric Harvesters | Piezoelectric coefficient >= 8 pC/N; dielectric constant 10-8000 |
+| Photovoltaic Absorbers | Band gap 0.7-2.0 eV; formation energy <= 0 eV/atom |
+| Hard Coatings | Bulk modulus 200-500 GPa; shear modulus 100-300 GPa |
+| Hard, Stiff Ceramics | Bulk modulus 100-300 GPa; shear modulus 60-200 GPa |
+| Aerospace Materials | Bulk modulus >= 100 GPa; shear modulus >= 40 GPa; density <= 5.0 g/cm3 |
+| Acousto-Optic Hybrids | Piezoelectric coefficient 2-9 pC/N; dielectric constant 8-95 |
+| Low-Density Structural Materials | Density <= 3.5 g/cm3; shear modulus 65-195 GPa |
+| Toxic-Free Perovskite Oxides | Band gap >= 2.0 eV; bulk modulus 90-135 GPa |
+| Insulating Dielectrics | Dielectric constant >= 8.0; band gap >= 2.5 eV |
+| Transparent Conductors | Band gap >= 3.0 eV |
 
 ## Configuration
 
