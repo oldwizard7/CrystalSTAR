@@ -55,7 +55,7 @@ All 14 tasks are defined in `config/tasks.yaml`:
 
 | Task | Target Properties |
 |------|-------------------|
-| Wide-Bandgap Semiconductors | Band gap 3.0-6.0 eV |
+| Wide-Bandgap Semiconductors | Band gap >= 2.5 eV, Formation energy <= -1.0 eV/atom |
 | SAW/BAW Acoustic Substrates | Bulk modulus 100-250 GPa, Shear 50-150 GPa |
 | High-k Dielectrics | Dielectric constant 10-90, Band gap 2.5-6.5 eV |
 | Solid-State Electrolytes | Band gap 4.0-8.0 eV |
