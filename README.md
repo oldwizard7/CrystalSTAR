@@ -7,7 +7,7 @@
 CrystalSTAR combines LLM-based reasoning with domain-specific crystal manipulation tools and a multi-scale memory module (M3) to discover novel crystal structures satisfying user-defined property constraints.
 
 Key features:
-- **Tool-augmented generation**: Four crystal manipulation tools (Substitute, Mutate, Mix, Prototype) ground LLM actions in physically valid transformations
+- **Tool-augmented generation**: Four crystal manipulation tools (Substitute, Mutate, Mix, Prototype) ground LLM actions in structured, executable crystal transformations
 - **Multi-scale Memory (M3)**: Hierarchical memory (Micro/Meso/Macro) that accumulates search experience across iterations and runs
 - **Surrogate evaluation**: CHGNet for stability + ALIGNN for target properties (band gap, bulk modulus, etc.)
 - **14 benchmark tasks** spanning electronic, mechanical, optical, and thermal property domains
