@@ -1,8 +1,6 @@
-# CrystalSTAR
+# [COLM 2026] CrystalSTAR
 
-**Crystal Structure Tool-Augmented Reasoning** -- an agentic framework for autonomous crystal structure discovery using Large Language Models.
-
-*Paper under review.*
+### Structured Action Orchestration with Trio-Reflection for Constrained Novel Crystal Discovery
 
 ## Overview
 
